@@ -98,13 +98,13 @@
             <div class="container-fluid p-2 p-md-3">
                 <ul class="nav justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link active" href="https://github.com/wdkunrath">GitHub</a>
+                        <a class="nav-link active" href="https://github.com/wdkunrath" target="_blank">GitHub</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://twitter.com/WalzinhaDK">Twitter</a>
+                        <a class="nav-link" href="https://twitter.com/WalzinhaDK" target="_blank">Twitter</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://www.linkedin.com/in/walquiria-d-987bb4105">Linkedin</a>
+                        <a class="nav-link" href="https://www.linkedin.com/in/walquiria-d-987bb4105" target="_blank">Linkedin</a>
                     </li>
                     <li>
                         <a class="nav-link disabled" >EM CONSTRUÇÃO.</a>
