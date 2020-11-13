@@ -110,7 +110,9 @@
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="conteudo-modal"><ul class="list-group"></ul> </div>
+                <div class="modal-body" id="conteudo-modal">
+                    <p>Verifiquei todas as compras do cliente e recomendei os itens das compras sem repetilos.</p>
+                    <ul class="list-group"></ul></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
@@ -131,7 +133,7 @@
                 xhr.onreadystatechange = () => {
                     if(xhr.readyState == 4) {
                         if(xhr.status == 200) {
-                            /* Verifiquei todas as compras dele e recomendei os itens das compras.*/
+                            /* Verifiquei todas as compras dele e recomendei os itens das compras sem repetilos.*/
                             let historico = JSON.parse(xhr.response);
                             let filtro = historico.filter(data =>data.cliente === info);
                             let itens = filtro.map(data => data.itens);
