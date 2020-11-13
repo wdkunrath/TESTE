@@ -8,6 +8,8 @@
         <style>
             a{
                 cursor:pointer;
+                text-decoration:none !important;
+                color: #6e6e6e;
             }
             a:hover{
                 color:#ff0000 !important;
@@ -55,7 +57,9 @@
                             </div>
                             <ul class="list-group">
                             @foreach ($listClientes as $clientes)
-                                <li class="list-group-item">{{ $clientes['nome'] }}</li>
+                                <li class="list-group-item">
+                                    <a name="cpf" value={{ $clientes['cpf'] }} data-toggle="modal" data-target="#modal" class="nomeUser">{{ $clientes['nome'] }} - {{ $clientes['cpf']  }}</a>
+                                </li>
                             @endforeach
                             </ul>
                         </div>
@@ -66,31 +70,15 @@
                             </div>
                             <ul class="list-group">
                             @foreach ($listaClienteComprante as $clientes)
-                                <li class="list-group-item"><a name="nome" value={{ $clientes['cpf'] }} data-toggle="modal" data-target="#modal">{{ $clientes['nome'] }}</a></li>
+                                <li class="list-group-item">
+                                    <a name="cpf" value={{ $clientes[0]['cpf'] }} data-toggle="modal" data-target="#modal" class="nomeUser">{{ $clientes[0]['nome'] }}
+                                        <span class="badge badge-pill badge-info">{{ $clientes['count'] }}</span>
+                                    </a>
+                                </li>
                             @endforeach
                             </ul>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Recomendado</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {{$recomendado}}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
                 </div>
             </div>
         </div>
@@ -111,9 +99,57 @@
                     </li>
                 </ul>
             </div>
-    </footer>
+        </footer>
+        <!-- Modal -->
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Recomendado</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="conteudo-modal"><ul class="list-group"></ul> </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+            </div>
+        </div>
     </body>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    <script>
+        $(function(){
+            $(document).on("click", ".nomeUser", function () {
+                var info = $(this).attr('value');
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://www.mocky.io/v2/5e960a2d2f0000f33b0257c4');
+                xhr.send();
+                xhr.onreadystatechange = () => {
+                    if(xhr.readyState == 4) {
+                        if(xhr.status == 200) {
+                            /* Verifiquei todas as compras dele e recomendei os itens das compras.*/
+                            let historico = JSON.parse(xhr.response);
+                            let filtro = historico.filter(data =>data.cliente === info);
+                            let itens = filtro.map(data => data.itens);
+                            let produtos = itens.map( data=> data.map(produto => produto.produto)).flat();
+                            var ComprasFeitas = [];
+                            $.each(produtos, function(i, elemento){
+                                if($.inArray(elemento, ComprasFeitas) === -1) {
+                                    ComprasFeitas.push(elemento);
+                                }
+                            });
+
+                            for (const iterator of ComprasFeitas) {
+                                $('#conteudo-modal ul').html('<li class="list-group-item">'+ComprasFeitas+'</li>');
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </html>

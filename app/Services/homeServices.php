@@ -11,7 +11,6 @@ class HomeServices
 
         $this->listClientes  = $listClientes;
         $this->historicoCompra  = $historicoCompra;
-
     }
 
     public function listCliente(){
@@ -58,8 +57,11 @@ class HomeServices
 
     public function listaClienteComprante($ano){
         $listaClienteComprante = [];
+        $clienteMaisCompras = [];
         $cliente = [];
 
+        /* Verifica a data Recebida e separa todas a compras do ano solicitado
+        OBS: pode ser colocado filtro e separada como função*/
         foreach ($this->historicoCompra as $chave => $item) {
             if(date('Y', strtotime($item['data'])) == $ano){
                 foreach ($this->listClientes as $key => $value) {
@@ -72,10 +74,24 @@ class HomeServices
 
         $cpfs = array_unique(array_column($listaClienteComprante,'cpf'));
 
-        foreach ($cpfs as $i => $item) {
-             foreach ($this->listClientes as $x => $value) {
-                if($value['cpf'] == $item){
-                    $cliente[] = $value;
+        /* Conta quantas compras tem cada Cliente e lista as compras feitas
+        OBS: Pode vir a ser uma função separada*/
+        foreach ($cpfs as $key => $cpf){
+            $array = HomeServices::recursive($listaClienteComprante, $cpf);
+            $clienteMaisCompras[] = [
+                array_unique($array[0]),
+                'count'   => count($array)
+            ];
+        }
+
+        /* Verifica se tem mais de uma compra*/
+        foreach ($cpfs as $i => $item){
+            foreach ($clienteMaisCompras as $x => $value) {
+                $cpfC = implode(array_unique(array_column($value,'cpf')));
+                if($cpfC == $item){
+                    if($clienteMaisCompras[$x]['count'] > 1){
+                        $cliente[] = $value;
+                    }
                 }
             }
         }
@@ -83,7 +99,15 @@ class HomeServices
         return $cliente;
     }
 
-    public function recomendado(){
-        return "teste";
+    protected function recursive($array,$cpf){
+        $clienteMais = [];
+
+        for ($i=0; $i < count($array); $i++) {
+            if($array[$i]['cpf'] == $cpf){
+                $clienteMais[] = $array[$i];
+            }
+        }
+
+        return $clienteMais;
     }
 }

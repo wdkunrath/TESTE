@@ -25,8 +25,8 @@ class HomeController extends Controller
         $maiorCompra = $this->homeServices->maiorCompra();
         $ano = $this->request['parameters'] == null ? "2018" : $this->request['parameters'];
         $listaClienteComprante = $this->homeServices->listaClienteComprante($ano);
-        $recomendado = $this->homeServices->recomendado();
-        return view('home', compact('listClientes','maiorCompra', 'listaClienteComprante', 'recomendado'));
+        $cpf = $this->request['parameters'] == null ? "000.000.000-04" : $this->request['parameters'];
+        return view('home', compact('listClientes','maiorCompra', 'listaClienteComprante'));
     }
 
     /**
